@@ -1,7 +1,6 @@
 """
-This DAG is demonstrating a simple task to read data from a Firestore collection.
-Fetch data from an API.
-And execute one of two tasks based on the response from the API.
+API and Database Integration Workflow
+Demonstrates reading from database, making API calls, and conditional branching based on response
 """
 
 from __future__ import annotations
@@ -11,11 +10,11 @@ import pendulum
 from airflow.models.dag import DAG
 from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.providers.http.operators.http import SimpleHttpOperator
-from firebase.firestore import Firestore
+from db.firestore import Firestore
 
 
 def read_firestore_data(**kwargs):
-    docs = Firestore.scan('automation_catalog')
+    docs = Firestore.scan('cities')
     doc_count = len(docs)
     for doc in docs:
         print(f'Doc => {doc}')
@@ -48,13 +47,13 @@ def check_id_less_than_hundred(**context):
 
 
 with DAG(
-    dag_id="db_and_http",
+    dag_id="api_database_workflow",
     default_args={"retries": 0},
-    description="DAG tutorial",
+    description="Integrated workflow with database operations, API calls, and conditional logic",
     schedule=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
-    tags=["firebase", "http"],
+    tags=["api", "database", "workflow"],
 ) as dag:
 
     read_op = PythonOperator(

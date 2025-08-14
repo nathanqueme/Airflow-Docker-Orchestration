@@ -1,9 +1,8 @@
-
 from typing import Dict, Literal, Optional
 from datetime import datetime, timezone
 
 
-from .firestore_config import client
+from .config import client
 
 from .utils import DBUtils
 from google.cloud.firestore_v1.base_query import FieldFilter

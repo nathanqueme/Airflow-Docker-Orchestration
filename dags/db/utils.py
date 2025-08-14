@@ -1,4 +1,3 @@
-
 from typing import Any, Dict, List, Optional
 
 from google.cloud.firestore_v1.document import DocumentSnapshot

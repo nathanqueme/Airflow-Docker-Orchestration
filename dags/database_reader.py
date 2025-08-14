@@ -1,5 +1,6 @@
 """
-This DAG is demonstrating a simple task to read data from a Firestore collection.
+Database Reader DAG
+Demonstrates reading data from a Firestore database collection
 """
 
 from __future__ import annotations
@@ -7,7 +8,7 @@ from __future__ import annotations
 import pendulum
 from airflow.models.dag import DAG
 from airflow.operators.python import PythonOperator
-from firebase.firestore_config import client
+from db.config import client
 
 
 def read_firestore_data(**kwargs):
@@ -17,13 +18,13 @@ def read_firestore_data(**kwargs):
         print(f'{doc.id} => {doc.to_dict()}')
 
 with DAG(
-    dag_id="simple_db_read",
+    dag_id="database_reader",
     default_args={"retries": 0},
-    description="DAG tutorial",
+    description="Read data from Firestore database collection",
     schedule=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
-    tags=["example"],
+    tags=["database", "firestore"],
 ) as dag:
     dag.doc_md = __doc__
 

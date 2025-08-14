@@ -1,6 +1,6 @@
 """
-### DAG Tutorial Documentation
-This DAG is demonstrating an Extract -> Transform -> Load pipeline
+### ETL Pipeline DAG
+Extract, Transform, and Load data workflow demonstrating basic ETL operations
 """
 
 from __future__ import annotations
@@ -10,28 +10,17 @@ import json, pendulum
 from airflow.models.dag import DAG
 from airflow.operators.python import PythonOperator
 
-
-# [START instantiate_dag]
 with DAG(
-    dag_id="simple_etl",
-    # [START default_args]
-    # These args will get passed on to each operator
-    # You can override them on a per-task basis during operator initialization
+    dag_id="etl_pipeline",
     default_args={"retries": 2},
-    # [END default_args]
-    description="DAG tutorial",
+    description="ETL Pipeline demonstrating Extract, Transform, Load operations",
     schedule=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
-    tags=["example"],
+    tags=["etl", "example"],
 ) as dag:
-    # [END instantiate_dag]
-    # [START documentation]
     dag.doc_md = __doc__
-    # [END documentation]
 
-
-    # [START core_functions]
     def extract(**kwargs):
         ti = kwargs["ti"]
         data_string = '{"1001": 301.27, "1002": 433.21, "1003": 502.22}'
@@ -54,13 +43,8 @@ with DAG(
         ti = kwargs["ti"]
         total_value_string = ti.xcom_pull(task_ids="transform", key="total_order_value")
         total_order_value = json.loads(total_value_string)
-
         print(total_order_value)
 
-    # [END core_functions]
-
-
-    # [START main_flow]
     extract_op = PythonOperator(
         task_id="extract",
         python_callable=extract,
