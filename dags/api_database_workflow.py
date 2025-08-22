@@ -13,12 +13,12 @@ from airflow.providers.http.operators.http import SimpleHttpOperator
 from db.firestore import Firestore
 
 
-def read_firestore_data(**kwargs):
+def fetch_cities(**kwargs):
     docs = Firestore.scan('cities')
     doc_count = len(docs)
-    for doc in docs:
-        print(f'Doc => {doc}')
-    return doc_count  # Return the number of documents
+    # for doc in docs:
+    #    print(f'Doc => {doc}')
+    return doc_count
 
 
 def log_response(**context):
@@ -49,7 +49,7 @@ def check_id_less_than_hundred(**context):
 with DAG(
     dag_id="api_database_workflow",
     default_args={"retries": 0},
-    description="Integrated workflow with database operations, API calls, and conditional logic",
+    description="Airflow workflow integrating Firestore data with API requests, response logging, and conditional branching.",
     schedule=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
@@ -57,8 +57,8 @@ with DAG(
 ) as dag:
 
     read_op = PythonOperator(
-        task_id="read_firestore_data",
-        python_callable=read_firestore_data,
+        task_id="fetch_cities",
+        python_callable=fetch_cities,
     )
 
     post_op = SimpleHttpOperator(
@@ -66,7 +66,7 @@ with DAG(
         method='POST',
         http_conn_id='api_conn',  
         endpoint='posts',
-        data="""{"title": "foo", "body": "bar", "userId": {{ ti.xcom_pull(task_ids='read_firestore_data') | int }}}""",
+        data="""{"title": "foo", "body": "bar", "userId": {{ ti.xcom_pull(task_ids='fetch_cities') | int }}}""",
         headers={"Content-Type": "application/json"},
         log_response=True,
     )
