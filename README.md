@@ -13,8 +13,6 @@ These examples also demonstrate **XCom integration** using `xcom_push()` and `xc
 ## Getting Started
 
 ### Prerequisites
-- [Docker](https://docs.docker.com/get-docker/) installed
-- [Docker Compose](https://docs.docker.com/compose/install/) installed
 - At least 4GB RAM and 10GB disk space
 
 ### Quick Setup
